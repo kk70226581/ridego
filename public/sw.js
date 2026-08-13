@@ -1,4 +1,4 @@
-const CACHE = 'ridego-v7.2';
+const CACHE = 'ridego-v7.3';
 const CORE = ['/', '/index.html', '/styles.css', '/phase2.css', '/phase3.css', '/phase4.css', '/phase5.css', '/phase6.css', '/phase7.css', '/app.js', '/phase5.js', '/phase6.js', '/phase7.js', '/manifest.json'];
 
 self.addEventListener('install', event => {
@@ -10,7 +10,8 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET' || new URL(event.request.url).pathname.startsWith('/api/')) return;
+  const url = new URL(event.request.url);
+  if (event.request.method !== 'GET' || url.origin !== location.origin || url.pathname.startsWith('/api/')) return;
   event.respondWith(fetch(event.request).then(response => {
     const copy = response.clone();
     caches.open(CACHE).then(cache => cache.put(event.request, copy));
